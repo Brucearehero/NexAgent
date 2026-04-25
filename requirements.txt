@@ -18,13 +18,10 @@ langchain-anthropic>=0.2.0
 langchain-google-vertexai>=0.1.0
 openrouter>=0.0.5
 
-# 代码执行
-jupyter>=1.0.0
-code-executer>=0.1.0
+# 代码执行（使用内置 exec，无需额外安装）
 
 # 浏览器自动化
 playwright>=1.47.0
-langchain-playwright>=0.1.0
 
 # HTTP 请求
 httpx>=0.27.0
