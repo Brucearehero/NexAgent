@@ -1,0 +1,32 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 项目特定
+*.log
+config.local.yaml
+conversations/
+
+# Playwright
+.playwright/
+
+# macOS
+.DS_Store
+
+# 测试
+.pytest_cache/
+htmlcov/
+.coverage

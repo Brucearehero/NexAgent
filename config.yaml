@@ -1,0 +1,52 @@
+# NexAgent 配置
+
+# 模型配置
+model:
+  # 当前使用的模型 provider
+  provider: "openrouter"  # openrouter / deepseek / gemini / groq / silin / zhipu
+
+  # 各个 provider 的 API Key（留空表示使用默认或免费额度）
+  api_keys:
+    openrouter: ""    # https://openrouter.ai/keys
+    deepseek: ""       # https://platform.deepseek.com/api_keys
+    gemini: ""         # https://aistudio.google.com/app/apikey
+    groq: ""           # https://console.groq.com/keys
+    silin: ""          # https://account.siliconflow.cn/api-key
+    zhipu: ""          # https://open.bigmodel.cn/api/paas/v4/
+
+  # 模型名称
+  model_name:
+    openrouter: "anthropic/claude-3.5-haiku"
+    deepseek: "deepseek-chat"
+    gemini: "gemini-2.0-flash"
+    groq: "llama-3.3-70b-versatile"
+    silin: "Qwen/Qwen2.5-7B-Instruct"
+    zhipu: "glm-4-flash"
+
+# Agent 配置
+agent:
+  # 最大思考步数（防止死循环）
+  max_iterations: 20
+  # Agent 角色描述
+  system_prompt: |
+    你是一个通用的 AI Agent，运行在 Windows 平台上。
+    你有以下工具可用：
+    - 文件读写：读取、创建、编辑、删除本地文件
+    - 代码执行：执行 Python 代码片段
+    - Shell 命令：运行 PowerShell / CMD 命令
+    - 打开应用程序：打开 VS Code、PyCharm 等
+    - 浏览器操作：通过 Playwright 控制浏览器
+    - HTTP 请求：调用外部 API
+    - 网页搜索：搜索互联网信息
+    请根据用户的需求，合理调用工具完成任务。
+    每次只使用一个工具，等待结果后再决定下一步。
+
+# 前端配置
+frontend:
+  host: "127.0.0.1"
+  port: 8000
+
+# Playwright 配置（浏览器操作）
+browser:
+  headless: false  # 是否无头模式运行
+  slow_mo: 100     # 操作延迟（毫秒）
