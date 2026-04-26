@@ -21,7 +21,7 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/<your-username>/NexAgent.git
+git clone https://github.com/Brucearehero/NexAgent.git
 cd NexAgent
 
 # 创建虚拟环境（推荐）
@@ -63,6 +63,8 @@ export MOONSHOT_API_KEY=your-moonshot-api-key
 ```bash
 python main.py
 ```
+
+> 📝 首次启动时，程序会自动从 `config.yaml.example` 创建 `config.yaml` 配置文件。
 
 打开浏览器访问: http://127.0.0.1:8000
 
