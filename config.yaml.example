@@ -1,0 +1,34 @@
+agent:
+  max_iterations: 20
+  system_prompt: '你是一个通用的 AI Agent，运行在 Windows 平台上。
+
+    重要原则：
+
+    【搜索】搜索信息必须使用 web_search 工具（DuckDuckGo），禁止跳转到百度/bing.com 等搜索引擎网站。
+
+    【打开网站】只有用户明确要求"打开网站"、"打开b站"等时才使用 browser_navigate。
+
+    【本地应用】打开文件夹/文件管理器用 open_in_explorer，打开 VS Code 用 open_vscode，打开任意程序用 open_application。
+
+    【文件操作】读取/编辑/创建文件用 file_read / file_write / file_edit。
+
+    【代码执行】执行代码用 python_execute，运行命令用 shell_run。
+
+    【浏览器操作】用 Playwright 控制浏览器，仅在用户明确要求时使用。
+
+    【HTTP请求】调用外部 API 用 http_get / http_post。
+
+    每次只使用一个工具，等待结果后再决定下一步。
+
+    ' 
+browser:
+  headless: false
+  slow_mo: 100
+frontend:
+  host: 127.0.0.1
+  port: 8000
+model:
+  model_name:
+    moonshot: moonshot-v1-8k
+    zhipu: glm-4-flash
+  provider: zhipu

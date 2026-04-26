@@ -6,6 +6,7 @@ import httpx
 import json
 from typing import Optional
 from langchain_core.tools import tool
+from agent.core import check_tool_stop, AgentStoppedException
 
 
 @tool
@@ -21,6 +22,7 @@ def http_get(url: str, headers: Optional[str] = None, params: Optional[str] = No
     Returns:
         响应内容
     """
+    check_tool_stop()
     try:
         kwargs = {"timeout": 30.0}
 
@@ -39,6 +41,8 @@ def http_get(url: str, headers: Optional[str] = None, params: Optional[str] = No
         except json.JSONDecodeError:
             return f"响应状态: {response.status_code}\n\n{response.text[:2000]}"
 
+    except AgentStoppedException:
+        return "[已停止] 用户请求中断了执行。"
     except httpx.TimeoutException:
         return "请求超时"
     except httpx.HTTPStatusError as e:
@@ -64,6 +68,7 @@ def http_post(
     Returns:
         响应内容
     """
+    check_tool_stop()
     try:
         kwargs = {
             "timeout": 30.0,
@@ -84,6 +89,8 @@ def http_post(
         except json.JSONDecodeError:
             return f"响应状态: {response.status_code}\n\n{response.text[:2000]}"
 
+    except AgentStoppedException:
+        return "[已停止] 用户请求中断了执行。"
     except httpx.TimeoutException:
         return "请求超时"
     except httpx.HTTPStatusError as e:
@@ -104,6 +111,7 @@ def http_delete(url: str, headers: Optional[str] = None) -> str:
     Returns:
         响应内容
     """
+    check_tool_stop()
     try:
         kwargs = {"timeout": 30.0}
 
@@ -119,6 +127,8 @@ def http_delete(url: str, headers: Optional[str] = None) -> str:
         except json.JSONDecodeError:
             return f"响应状态: {response.status_code}\n\n{response.text[:2000]}"
 
+    except AgentStoppedException:
+        return "[已停止] 用户请求中断了执行。"
     except httpx.TimeoutException:
         return "请求超时"
     except httpx.HTTPStatusError as e:
@@ -139,12 +149,14 @@ def web_search(query: str, num_results: int = 5) -> str:
     Returns:
         搜索结果
     """
+    check_tool_stop()
     try:
         from duckduckgo_search import DDGS
 
         results = []
         with DDGS() as ddgs:
             for r in ddgs.text(query, max_results=num_results):
+                check_tool_stop()
                 results.append({
                     "title": r.get("title", ""),
                     "url": r.get("href", ""),
@@ -163,6 +175,8 @@ def web_search(query: str, num_results: int = 5) -> str:
 
         return "\n".join(output)
 
+    except AgentStoppedException:
+        return "[已停止] 用户请求中断了执行。"
     except ImportError:
         return "duckduckgo-search 未安装，请运行: pip install duckduckgo-search"
     except Exception as e:

@@ -1,11 +1,16 @@
 # NexAgent
 
+[![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![LangChain](https://img.shields.io/badge/LangChain-0.3+-purple.svg)](https://www.langchain.com/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.115-red.svg)](https://fastapi.tiangolo.com/)
+
 > Windows 通用 AI Agent 框架 - 开箱即用的本地 AI 助手
 
 ## 功能特性
 
 - 🔧 **多工具支持**：文件读写、代码执行、Shell 命令、浏览器控制、HTTP 请求、网页搜索
-- 🤖 **多模型支持**：OpenRouter / DeepSeek / Google Gemini / Groq / 硅基流动 / 智谱 GLM
+- 🤖 **多模型支持**：智谱 GLM / Moonshot (Kimi)
 - 💻 **本地 Web UI**：简洁美观的对话界面，开箱即用
 - 🛠️ **可扩展工具集**：基于 LangChain 构建，方便添加自定义工具
 - 📦 **配置简单**：YAML 配置文件，无需硬编码
@@ -16,7 +21,7 @@
 
 ```bash
 # 克隆项目
-git clone https://github.com/yourname/NexAgent.git
+git clone https://github.com/<your-username>/NexAgent.git
 cd NexAgent
 
 # 创建虚拟环境（推荐）
@@ -35,15 +40,23 @@ playwright install chromium
 
 ### 3. 配置 API Key
 
-编辑 `config.yaml`，填入你的模型 API Key：
+通过系统环境变量配置 API Key：
 
-```yaml
-model:
-  provider: "deepseek"  # 选择默认模型
+#### Windows 系统
+1. 右键点击「此电脑」→「属性」→「高级系统设置」→「环境变量」
+2. 在「系统变量」中点击「新建」，添加以下环境变量：
+   - 变量名：`ZHIPU_API_KEY`，变量值：你的智谱 API Key
+   - 变量名：`MOONSHOT_API_KEY`，变量值：你的月之暗面 API Key
+3. 重启电脑或重启终端使环境变量生效
 
-  api_keys:
-    deepseek: "your-api-key-here"  # 填入你的 DeepSeek API Key
+#### Linux/Mac 系统
+在终端中执行：
+```bash
+export ZHIPU_API_KEY=your-zhipu-api-key
+export MOONSHOT_API_KEY=your-moonshot-api-key
 ```
+
+或者将上述命令添加到 `~/.bashrc` 或 `~/.zshrc` 文件中，使其永久生效。
 
 ### 4. 启动服务
 
@@ -57,12 +70,8 @@ python main.py
 
 | 提供商 | 说明 | 免费额度 |
 |--------|------|----------|
-| OpenRouter | 聚合多模型（Claude/GPT 等） | 部分模型免费 |
-| DeepSeek | 国产大模型，性价比高 | 有免费额度 |
-| Google Gemini | Google Gemini 2.0 | 每天大量免费 |
-| Groq | 超快推理速度 | 部分模型免费 |
-| 硅基流动 | 国内可用，免费额度多 | 有免费额度 |
 | 智谱 GLM | 国产 GLM-4 系列 | 有免费额度 |
+| Moonshot (Kimi) | 国产长文本模型 | 有免费额度 |
 
 ## 工具集
 
@@ -162,7 +171,7 @@ def get_all_tools() -> list:
 ```bash
 curl -X POST http://127.0.0.1:8000/api/config \
   -H "Content-Type: application/json" \
-  -d '{"provider": "gemini", "api_key": "your-key"}'
+  -d '{"provider": "zhipu", "api_key": "your-key"}'
 ```
 
 ## API 接口

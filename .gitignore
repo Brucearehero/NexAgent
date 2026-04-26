@@ -17,6 +17,7 @@ env/
 
 # 项目特定
 *.log
+config.yaml
 config.local.yaml
 conversations/
 

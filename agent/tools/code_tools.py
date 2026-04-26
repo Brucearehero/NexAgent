@@ -4,8 +4,10 @@ NexAgent - 代码执行工具
 import subprocess
 import sys
 import io
+import time
 from contextlib import redirect_stdout, redirect_stderr
 from langchain_core.tools import tool
+from agent.core import check_tool_stop, AgentStoppedException
 
 
 @tool
@@ -19,6 +21,7 @@ def execute_python(code: str) -> str:
     Returns:
         代码执行结果或错误信息
     """
+    check_tool_stop()
     output = io.StringIO()
     errors = io.StringIO()
 
@@ -32,6 +35,8 @@ def execute_python(code: str) -> str:
         if error:
             return f"执行结果:\n{result}\n\n警告/错误:\n{error}"
         return f"执行结果:\n{result}" if result else "代码执行完成，无输出"
+    except AgentStoppedException:
+        return "[已停止] 用户请求中断了执行。"
     except SyntaxError as e:
         return f"语法错误: {str(e)}"
     except Exception as e:
@@ -49,28 +54,43 @@ def execute_shell(command: str) -> str:
     Returns:
         命令执行结果
     """
+    check_tool_stop()
     try:
-        result = subprocess.run(
+        process = subprocess.Popen(
             command,
             shell=True,
-            capture_output=True,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
             text=True,
             encoding="utf-8",
             errors="replace",
         )
 
+        # 轮询检查停止标志
+        while process.poll() is None:
+            check_tool_stop()
+            time.sleep(0.2)
+
+        stdout, stderr = process.communicate()
+
         output = []
-        if result.stdout:
-            output.append(f"标准输出:\n{result.stdout}")
-        if result.stderr:
-            output.append(f"标准错误:\n{result.stderr}")
-        if result.returncode != 0:
-            output.append(f"退出码: {result.returncode}")
+        if stdout:
+            output.append(f"标准输出:\n{stdout}")
+        if stderr:
+            output.append(f"标准错误:\n{stderr}")
+        if process.returncode != 0:
+            output.append(f"退出码: {process.returncode}")
 
         if not output:
             return "命令执行完成，无输出"
 
         return "\n".join(output)
+    except AgentStoppedException:
+        try:
+            process.kill()
+        except Exception:
+            pass
+        return "[已停止] 用户请求中断了执行。"
     except Exception as e:
         return f"命令执行失败: {str(e)}"
 
